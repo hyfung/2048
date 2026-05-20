@@ -1,8 +1,41 @@
-# React + Vite
+# 2048
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript implementation of the classic 2048 sliding tile puzzle.
 
-Currently, two official plugins are available:
+**Live demo:** https://hyfung.github.io/2048/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Controls
+
+| Input | Action |
+|-------|--------|
+| Arrow keys / WASD | Move tiles |
+| Swipe | Move tiles (mobile) |
+
+## Stack
+
+- React 18 + TypeScript
+- Vite 5
+- Docker (dev server)
+
+## Development
+
+**Local (with nvm):**
+```bash
+./npm_run_dev.sh
+```
+
+**Docker:**
+```bash
+./run.sh
+```
+
+**Build:**
+```bash
+npm run build
+```
+
+## Deployment
+
+Pushes to `master` automatically build and deploy to GitHub Pages via GitHub Actions.
+
+> **First-time setup:** Go to *Settings → Pages* in the GitHub repo and set the source to **GitHub Actions**.
