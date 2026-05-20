@@ -1,0 +1,280 @@
+/* ─── Variables ─────────────────────────────────────────────── */
+:root {
+  --gap: 12px;
+  --cell: 100px;
+  --board: calc(4 * var(--cell) + 5 * var(--gap));
+  --radius: 6px;
+  --bg: #faf8ef;
+  --board-bg: #bbada0;
+  --cell-bg: rgba(238, 228, 218, 0.35);
+  --text-dark: #776e65;
+  --text-light: #f9f6f2;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── App Layout ─────────────────────────────────────────────── */
+.app {
+  width: min(var(--board), calc(100vw - 32px));
+  padding: 24px 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+/* ─── Header ─────────────────────────────────────────────────── */
+.header {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: #9b8d7c;
+  margin-top: 6px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.scores {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  background: var(--board-bg);
+  color: var(--text-light);
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  text-align: center;
+  min-width: 72px;
+}
+
+.score-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+
+.score-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  background: #8f7a66;
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius);
+  padding: 9px 18px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 120ms, transform 80ms;
+}
+
+.btn:hover  { background: #7d6b58; }
+.btn:active { transform: scale(0.97); }
+
+.btn-accent {
+  background: #f65e3b;
+}
+.btn-accent:hover { background: #e04e2b; }
+
+/* ─── Board ─────────────────────────────────────────────────── */
+.board {
+  position: relative;
+  width: var(--board);
+  height: var(--board);
+  background: var(--board-bg);
+  border-radius: 8px;
+  touch-action: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.board-bg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell));
+  grid-template-rows: repeat(4, var(--cell));
+  gap: var(--gap);
+  padding: var(--gap);
+  pointer-events: none;
+}
+
+.cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+.board-tiles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ─── Tiles ─────────────────────────────────────────────────── */
+.tile-wrapper {
+  position: absolute;
+  width: var(--cell);
+  height: var(--cell);
+  /* Position via CSS custom properties set as inline style */
+  transform: translate(
+    calc(var(--c) * (var(--cell) + var(--gap)) + var(--gap)),
+    calc(var(--r) * (var(--cell) + var(--gap)) + var(--gap))
+  );
+  transition: transform 100ms ease-in-out;
+  z-index: 1;
+  will-change: transform;
+}
+
+.tile-wrapper.tile-merged { z-index: 2; }
+
+.tile {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+/* Font sizes by digit count */
+.tile[data-digits="3"] { font-size: 2rem; }
+.tile[data-digits="4"] { font-size: 1.5rem; }
+.tile[data-digits="5"] { font-size: 1.1rem; }
+.tile[data-digits="6"] { font-size: 0.85rem; }
+
+/* Tile animations */
+@keyframes tile-appear {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes tile-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.tile-new    .tile { animation: tile-appear 130ms ease forwards; }
+.tile-merged .tile { animation: tile-pop    200ms ease forwards; }
+
+/* ─── Footer ─────────────────────────────────────────────────── */
+.footer {
+  font-size: 0.8rem;
+  color: #9b8d7c;
+  text-align: center;
+}
+
+/* ─── Overlay ─────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(238, 228, 218, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+  animation: fade-in 200ms ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.overlay-box {
+  background: rgba(250, 248, 239, 0.97);
+  border-radius: 14px;
+  padding: 44px 52px;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+  animation: slide-up 220ms ease;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.overlay-icon  { font-size: 3.5rem; margin-bottom: 12px; line-height: 1; }
+.overlay-title { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+.overlay-msg   { color: var(--text-dark); font-size: 1rem; margin-bottom: 8px; }
+.overlay-score { color: var(--text-dark); font-size: 0.95rem; margin-bottom: 24px; }
+
+.overlay-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.overlay-actions .btn,
+.overlay-actions .btn-accent {
+  padding: 12px 26px;
+  font-size: 0.95rem;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  :root {
+    --gap: 8px;
+    --cell: calc((100vw - 5 * 8px - 32px) / 4);
+    --board: calc(4 * var(--cell) + 5 * var(--gap));
+  }
+
+  .title { font-size: 3rem; letter-spacing: -1px; }
+
+  .tile            { font-size: 1.8rem; }
+  .tile[data-digits="3"] { font-size: 1.4rem; }
+  .tile[data-digits="4"] { font-size: 1.1rem; }
+  .tile[data-digits="5"] { font-size: 0.85rem; }
+
+  .overlay-box { padding: 32px 28px; }
+  .overlay-title { font-size: 2rem; }
+}
